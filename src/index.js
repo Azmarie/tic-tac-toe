@@ -69,6 +69,7 @@ class Game extends React.Component {
       moves: [
         'Game Start'
       ],
+      isDesc: true
   };
   }
 
@@ -109,6 +110,11 @@ class Game extends React.Component {
       xIsNext: (step % 2) ? false : true,
     });
   }
+  toggle() {
+    this.setState({
+      isDesc: !this.state.isDesc
+    })
+  }
 
   render() {
     const history = this.state.history;
@@ -121,11 +127,10 @@ class Game extends React.Component {
     else
       status = 'Next Player: ' + (this.state.xIsNet ? 'X' :'O');
 
-    let moves = this.state.moves.map(
-      (step, move) => {
-      if(moves === this.state.stepNumber) {return (
+    let moves = this.state.moves.map((step, move) => {
+      if(move === this.state.stepNumber) {return (
         <li key={move}>
-          <a href='#' onClick={() => this.jumpTo(move)} style={{color: 'red'}}>{step}</a>
+          <a href='#' onClick={() => this.jumpTo(move)} style={{color: 'yellow'}}>{step}</a>
         </li>
       )} else {return (
         <li key={move}>
@@ -133,6 +138,7 @@ class Game extends React.Component {
         </li>
       )}
     });
+    if(!this.state.isDesc) moves.reverse();
 
     return (
       <div className="game">
@@ -142,6 +148,7 @@ class Game extends React.Component {
         </div>
         <div className="game-info">
           <div className="status">{status}</div>
+          <button className="isDesc" onClick={() => this.toggle()} >Descend / Ascend</button>
           <ol className="moves">{moves}</ol>
         </div>
       </div>
