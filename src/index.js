@@ -59,30 +59,48 @@ class Board extends React.Component {
 }
 class Game extends React.Component {
   constructor(props) {
-      super(props);
-      this.state={
-          history: [{
-              squares:Array(9).fill(null),
-          }],
-          stepNumber: 0,
-          xIsNet:true,
-      };
+    super(props);
+    this.state={
+      history: [{
+        squares:Array(9).fill(null),
+      }],
+      stepNumber: 0,
+      xIsNet:true,
+      moves: [
+        'Game Start'
+      ],
+  };
   }
 
   handleClick(i) {
-      const history = this.state.history.slice(0, this.state.stepNumber+1);
-      const current = history[history.length-1];
-      const squares = current.squares.slice();
+    const history = this.state.history.slice(0, this.state.stepNumber+1);
+    const current = history[history.length-1];
+    const squares = current.squares.slice();
+    if(calculateWinner(squares) || squares[i]) return;
+    squares[i] = this.state.xIsNet ? 'X' : 'O';
 
-      if(calculateWinner(squares) || squares[i]) return;
-      squares[i] = this.state.xIsNet ? 'X' : 'O';
-      this.setState({
-          history: history.concat([{
-              squares:squares,
-          }]),
-          stepNumber: history.length,
-          xIsNet: !this.state.xIsNet,
-      });
+
+    let x, y;
+    if(i>5) {
+      x = 3; y = i-5;
+    } else if(i>2) {
+      x = 2; y = i-2;
+    } else {
+      x = 1; y = i+1;
+    }
+
+    const desc = squares[i] + ' moved to (' +x +',' +y + ').';
+    const moves = this.state.moves.slice(0, this.state.stepNumber+1);
+    moves.push(desc);
+
+    this.setState({
+      history: history.concat([{
+        squares:squares,
+      }]),
+      stepNumber: history.length,
+      xIsNet: !this.state.xIsNet,
+      moves:moves
+    });
   }
 
   jumpTo(step) {
@@ -97,26 +115,29 @@ class Game extends React.Component {
     const current = history[this.state.stepNumber];
     const winner = calculateWinner(current.squares);
 
-    const moves = history.map((step, move) => {
-        const desc = move? 'Go to move #' +move : 'Reset';
-        return (
-            <li key={move}>
-                <button onClick={() => this.jumpTo(move)}>{desc}</button>
-            </li>
-        );
-    });
     let status;
     if(winner)
-        status = ' Congrats to winner ' + winner;
+      status = ' Congrats to winner ' + winner;
     else
-        status = 'Next Player: ' + (this.state.xIsNet ? 'X' :'O');
+      status = 'Next Player: ' + (this.state.xIsNet ? 'X' :'O');
+
+    let moves = this.state.moves.map(
+      (step, move) => {
+      if(moves === this.state.stepNumber) {return (
+        <li key={move}>
+          <a href='#' onClick={() => this.jumpTo(move)} style={{color: 'red'}}>{step}</a>
+        </li>
+      )} else {return (
+        <li key={move}>
+          <a href='#' onClick={() => this.jumpTo(move)}>{step}</a>
+        </li>
+      )}
+    });
 
     return (
       <div className="game">
         <div className="game-board">
-          <Board
-            squares={current.squares}
-            onClick={(i) => this.handleClick(i)}
+          <Board squares={current.squares} onClick={(i) => this.handleClick(i)}
           />
         </div>
         <div className="game-info">
