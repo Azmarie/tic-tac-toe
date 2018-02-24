@@ -130,7 +130,7 @@ class Game extends React.Component {
     let moves = this.state.moves.map((step, move) => {
       if(move === this.state.stepNumber) {return (
         <li key={move}>
-          <a href='#' onClick={() => this.jumpTo(move)} style={{color: 'yellow'}}>{step}</a>
+          <a href='#' onClick={() => this.jumpTo(move)} style={{color: 'pink'}}>{step}</a>
         </li>
       )} else {return (
         <li key={move}>
