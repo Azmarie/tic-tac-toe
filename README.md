@@ -9,10 +9,6 @@ Some Features:
 * When someone wins, highlight the three squares that caused the win.
 
 
-## Demo
-
-[`Live demo`](https://tictac-toe-react.herokuapp.com/)
-
 ## Build
 
 To build the examples locally, run:
